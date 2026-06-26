@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Two-Tone Drum — Kele drum language</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600&family=Spectral:ital,wght@0,300;0,400;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--sea:#170d20;--line:rgba(154,152,166,.16);--lead:#9a98a6;--lead-dim:#5b5868;
+    --parch:#e9e2d2;--parch-dim:#b9b2a3;--gold:#d9a441;--gold-dim:#a87f33;--verd:#73b3a3;--murex:#9a3d68;--ochre:#cf8233;}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:var(--sea);color:var(--parch);font-family:"Spectral",Georgia,serif;line-height:1.55;
+    -webkit-font-smoothing:antialiased;background-image:radial-gradient(1100px 560px at 80% -12%,rgba(207,130,51,.13),transparent 60%),
+      radial-gradient(820px 640px at 5% 112%,rgba(115,179,163,.09),transparent 55%);display:flex;justify-content:center}
+  .card{max-width:640px;width:100%;padding:32px 22px 50px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold-dim)}
+  h1{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(40px,11vw,62px);margin:6px 0 0;line-height:.94;letter-spacing:-.5px}
+  h1 .gk{display:block;font-size:.32em;color:var(--lead);letter-spacing:.05em;margin-top:6px;font-style:italic}
+  .sub{font-style:italic;font-weight:300;color:var(--parch-dim);font-size:15.5px;margin:14px 0 0;max-width:54ch}
+  .sub b{color:var(--verd);font-style:normal;font-weight:400}
+  h2{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-dim);
+    margin:30px 0 12px;font-weight:500;border-top:1px solid var(--line);padding-top:18px}
+
+  /* stave / contour */
+  .stave{position:relative;height:96px;background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:8px;margin-bottom:12px;overflow:hidden}
+  .stave .lane{position:absolute;left:0;right:0;height:1px;background:rgba(154,152,166,.14)}
+  .stave .lane.hi{top:32px} .stave .lane.lo{top:64px}
+  .stave .tag{position:absolute;left:10px;font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--lead-dim);letter-spacing:.1em}
+  .stave .tag.hi{top:24px} .stave .tag.lo{top:56px}
+  .beat{position:absolute;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);transition:filter .1s}
+  .beat.hi{background:var(--ochre);color:var(--ochre)} .beat.lo{background:var(--lead);color:var(--lead)}
+  .beat.on{filter:brightness(1.5);box-shadow:0 0 14px 3px currentColor}
+
+  .pads{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .pad{cursor:pointer;border:1px solid var(--lead-dim);border-radius:10px;padding:24px 10px;text-align:center;user-select:none;-webkit-user-select:none;
+    touch-action:none;font-family:"Cormorant Garamond",serif;transition:.07s;background:linear-gradient(180deg,#241733,#1a0f28)}
+  .pad.hi{border-color:rgba(207,130,51,.45)} .pad.lo{border-color:rgba(154,152,166,.4)}
+  .pad b{display:block;font-size:26px;font-weight:500} .pad small{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--lead-dim);letter-spacing:.1em}
+  .pad.hi b{color:var(--ochre)} .pad.lo b{color:var(--lead)}
+  .pad.down{transform:translateY(2px);filter:brightness(1.3)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+  button{cursor:pointer;background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.18));border:1px solid var(--line);
+    border-radius:5px;color:var(--parch);font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.04em;padding:11px 16px;transition:.15s}
+  button:hover{border-color:rgba(207,130,51,.5);background:rgba(207,130,51,.07)} button:active{transform:translateY(1px)}
+  button.primary{border-color:rgba(207,130,51,.5);color:var(--ochre)}
+
+  .panel{background:rgba(0,0,0,.2);border:1px solid var(--line);border-radius:8px;padding:16px}
+  .glyphs{font-family:"IBM Plex Mono",monospace;font-size:26px;letter-spacing:6px;color:var(--ochre);min-height:34px}
+  .meaning{margin-top:8px}
+  .mword{font-family:"Cormorant Garamond",serif;font-size:21px;color:var(--parch);display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:4px}
+  .mword span i{color:var(--lead);font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:13px}
+  .count{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--murex);margin-top:10px;letter-spacing:.04em}
+  .resolved{font-family:"Cormorant Garamond",serif;font-size:24px;color:var(--verd);margin-top:6px}
+  .kele{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--gold-dim);margin-top:4px}
+
+  .binline{font-family:"IBM Plex Mono",monospace;font-size:20px;letter-spacing:2px;color:var(--ochre);min-height:28px;margin-top:8px;word-break:break-word}
+  .binline .b0{color:var(--lead);opacity:.85} .binline .b1{color:var(--ochre)}
+  .binval{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--murex);margin-top:7px}
+  .binval b{color:var(--verd)}
+  .binnote{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--lead-dim);margin-top:10px;line-height:1.75}
+  .binnote b{color:var(--gold-dim)}
+  .note{margin-top:24px;border-top:1px solid var(--line);padding-top:15px;font-family:"IBM Plex Mono",monospace;font-size:11px;line-height:1.85;color:var(--lead-dim)}
+  .note b{color:var(--gold-dim);font-weight:500}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="eyebrow">a purple-paper instrument · the drum that talks</div>
+  <h1>The Two-Tone Drum<span class="gk">Kele / Lokele drum language · Congo</span></h1>
+  <p class="sub">Two drums, two tones — <b>low</b> (the “male”) and <b>high</b> (the “female”). Each syllable of speech becomes one beat, high or low. The drum keeps the <b>tone-contour</b> of a sentence and throws everything else away — which is why it has to <b>repeat itself to be understood</b>. This is the system Carrington decoded; play it and you'll hear why it needs redundancy.</p>
+
+  <h2>① The two drums — tap to play</h2>
+  <div class="stave" id="stave"><div class="lane hi"></div><div class="lane lo"></div><span class="tag hi">HIGH ♀</span><span class="tag lo">LOW ♂</span></div>
+  <div class="pads">
+    <div class="pad lo" id="padLo"><b>LOW</b><small>male · ~140 Hz</small></div>
+    <div class="pad hi" id="padHi"><b>HIGH</b><small>female · ~210 Hz</small></div>
+  </div>
+  <div class="row"><button id="clear">clear contour</button><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--lead-dim)">tap out your own pattern — it draws as it plays</span></div>
+
+  <h2>① · the numbers — the drum talks in binary</h2>
+  <div class="panel">
+    <div class="binline" id="binGlyph">— tap the drums —</div>
+    <div class="binval" id="binVal"></div>
+    <div class="binnote">low = <b>0</b>, high = <b>1</b>. The two-tone drum is a binary language — the same digits <b>LIMEN</b> carries and that <b>Poetical Science</b> weaves. Ada Lovelace saw a mathematical poetry in number; the drum has spoken it, in two tones, for centuries.</div>
+  </div>
+
+  <h2>② The collision — one pattern, many words</h2>
+  <div class="panel">
+    <div class="glyphs" id="colGlyph">–&nbsp;–</div>
+    <div class="meaning" id="colMeaning">
+      <div class="mword">
+        <span>sango <i>father</i></span><span>songe <i>moon</i></span><span>koko <i>fowl</i></span><span>fele <i>a fish</i></span>
+      </div>
+    </div>
+    <div class="count">two high beats · <b>~130 Kele words share this exact drum-pattern</b> (Yakusu mission dictionary)</div>
+    <div class="row"><button class="primary" id="playCol">▶ beat “– –”</button></div>
+  </div>
+
+  <h2>③ The repair — add a stock phrase, kill the ambiguity</h2>
+  <p class="sub" style="margin-top:0">The drummer can't add vowels back, so they add <b>words</b> — a fixed redundant phrase that only fits one meaning. Tap one:</p>
+  <div class="row" id="repairBtns"></div>
+  <div class="panel" id="repairPanel" style="margin-top:12px;min-height:96px">
+    <div class="resolved" id="rRes" style="color:var(--lead-dim);font-family:'Spectral',serif;font-style:italic;font-size:16px">the moon, resolved by repetition →</div>
+    <div class="kele" id="rKele"></div>
+    <div class="count" id="rCount"></div>
+  </div>
+
+  <div class="note">
+    <b>why it needs all that.</b> dropping vowels and consonants leaves only the tones — and in Kele only about <b>one-eighth</b> of a word's information lives in its tones. so on average <b>~8 drum-words carry 1 spoken word</b> unambiguously. the redundancy buys back the seven-eighths that were lost. the drummers found that ratio by ear, centuries before Shannon wrote it down — which is exactly why this opens Gleick's history of information.
+    <br><b>honest frame.</b> the <i>collision set</i> (father/moon/fowl/fish = two high tones) and the <i>stock phrases</i> (“songe li tange la manga” = the moon looks down at the earth) are real, from Carrington via Gleick. but the exact <b>tone-by-tone melody</b> of each full phrase isn't transcribed in my sources — so the longer drummed contours here illustrate the <i>length</i> of the redundancy, not a note-perfect recording. the drum voice is synthesised. and this is a living tradition, now nearly silent: telephones finished what roads began.
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---- audio: two-tone drum ----
+  let ctx=null,master=null;
+  function init(){if(ctx)return;ctx=new (window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain();master.gain.value=0.85;
+    const c=ctx.createConvolver();const len=Math.floor(ctx.sampleRate*1.1),ir=ctx.createBuffer(2,len,ctx.sampleRate);
+    for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.0);}
+    c.buffer=ir;const wet=ctx.createGain();wet.gain.value=0.13,dry=ctx.createGain();dry.gain.value=0.95;
+    master.connect(dry).connect(ctx.destination);master.connect(c);c.connect(wet).connect(ctx.destination);}
+  function resume(){if(ctx&&ctx.state==='suspended')ctx.resume();}
+  function hit(high,t){
+    const f=high?210:140;
+    const o=ctx.createOscillator();o.type='sine';
+    o.frequency.setValueAtTime(f*1.7,t);o.frequency.exponentialRampToValueAtTime(f,t+0.05);
+    const g=ctx.createGain();g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(high?0.7:0.95,t+0.004);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+(high?0.26:0.4));
+    const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=high?1100:700;
+    o.connect(lp).connect(g).connect(master);o.start(t);o.stop(t+0.5);
+    // attack click
+    const nb=ctx.createBuffer(1,Math.floor(ctx.sampleRate*0.02),ctx.sampleRate),nd=nb.getChannelData(0);
+    for(let i=0;i<nd.length;i++)nd[i]=(Math.random()*2-1)*(1-i/nd.length);
+    const ns=ctx.createBufferSource();ns.buffer=nb;const hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=1400;
+    const ng=ctx.createGain();ng.gain.value=high?0.25:0.18;ns.connect(hp).connect(ng).connect(master);ns.start(t);ns.stop(t+0.03);
+  }
+
+  // ---- contour stave ----
+  const stave=document.getElementById('stave');
+  let beats=[];
+  function clearStave(){beats.forEach(b=>b.remove());beats=[];}
+  function addBeat(high,xPct){const b=document.createElement('div');b.className='beat '+(high?'hi':'lo');
+    b.style.left=xPct+'%';b.style.top=(high?32:64)+'px';stave.appendChild(b);beats.push(b);return b;}
+  let freeX=6;
+  function freeBeat(high){if(freeX>96){clearStave();freeX=6;bitstr='';}const b=addBeat(high,freeX);
+    b.classList.add('on');setTimeout(()=>b.classList.remove('on'),160);freeX+=7;}
+
+  // ---- the numbers: the two-tone drum is binary (low 0 / high 1) ----
+  let bitstr='';
+  function renderBin(){const gEl=document.getElementById('binGlyph'),vEl=document.getElementById('binVal');
+    if(!bitstr){gEl.textContent='— tap the drums —';vEl.textContent='';return;}
+    let html='';for(let i=0;i<bitstr.length;i++){const x=bitstr[i];html+='<span class="b'+x+'">'+(x==='1'?'▲':'▼')+x+'</span> ';}
+    gEl.innerHTML=html;
+    const use=bitstr.slice(-30),dec=parseInt(use,2);
+    vEl.innerHTML='binary <b>'+bitstr+'</b> = <b>'+dec+'</b>'+(bitstr.length>30?' (low 30 bits)':'')+' · '+bitstr.length+' beats';}
+  function pushBit(high){bitstr+=high?'1':'0';renderBin();}
+
+  // ---- pads ----
+  function pad(el,high){const go=e=>{if(e)e.preventDefault();init();resume();hit(high,ctx.currentTime+0.004);el.classList.add('down');
+      setTimeout(()=>el.classList.remove('down'),90);freeBeat(high);pushBit(high);};
+    el.addEventListener('mousedown',go);el.addEventListener('touchstart',go,{passive:false});}
+  pad(document.getElementById('padLo'),false);pad(document.getElementById('padHi'),true);
+  document.getElementById('clear').addEventListener('click',()=>{clearStave();freeX=6;bitstr='';renderBin();});
+
+  // ---- play a pattern (array of 1=high/0=low) on the stave ----
+  function playPattern(pat,opt){opt=opt||{};init();resume();clearStave();
+    const t0=ctx.currentTime+0.06,step=opt.step||0.30;
+    const n=pat.length;const span=Math.min(92,n*7);const x0=6,dx=n>1?span/(n-1):0;
+    pat.forEach((h,k)=>{const t=t0+k*step;hit(!!h,t);const xp=x0+dx*k;const b=addBeat(!!h,xp);
+      setTimeout(()=>{b.classList.add('on');setTimeout(()=>b.classList.remove('on'),step*900);},(t-t0)*1000);});
+    bitstr=pat.map(h=>h?'1':'0').join('');renderBin();   // show the pattern as a binary number
+    return (t0+n*step-ctx.currentTime)*1000;
+  }
+
+  // ---- collision ----
+  document.getElementById('playCol').addEventListener('click',()=>playPattern([1,1],{step:0.34}));
+
+  // ---- repair / stock phrases ----
+  // first word's real tones shown; tail length illustrates the redundancy
+  const PHRASES=[
+    {key:'moon',label:'moon',res:'MOON',
+     kele:'songe li tange la manga  —  “the moon looks down at the earth”',
+     pat:[1,1, 0,1,0, 0, 1,0]},                       // songe(– –) + redundant tail (illustrative)
+    {key:'whiteman',label:'white man',res:'WHITE MAN',
+     kele:'bosongo olimo ko nda lokonda  —  “red as copper, the spirit from the forest”',
+     pat:[0,1,0, 0,1,0, 1, 0,1, 1,0]},
+    {key:'comehome',label:'come home',res:'COME HOME',
+     kele:'“make your feet come back the way they went, make your legs come back … in the village that is ours”',
+     pat:[1,0,1, 1,0,1, 0,0,1, 1,0,0,1]}
+  ];
+  const btns=document.getElementById('repairBtns');
+  const rRes=document.getElementById('rRes'),rKele=document.getElementById('rKele'),rCount=document.getElementById('rCount');
+  PHRASES.forEach((p,i)=>{const b=document.createElement('button');if(i===0)b.className='primary';
+    b.textContent='▶ '+p.label;
+    b.addEventListener('click',()=>{
+      rRes.style.color='var(--verd)';rRes.style.fontStyle='normal';rRes.style.fontFamily="'Cormorant Garamond',serif";rRes.style.fontSize='24px';
+      rRes.textContent=p.res+' — unambiguous';
+      rKele.textContent=p.kele;
+      rCount.innerHTML=`<span style="color:var(--murex)">~130 possible</span> → <span style="color:var(--verd)">1</span> · ${p.pat.length} drum-beats to carry one word`;
+      playPattern(p.pat,{step:0.26});
+    });
+    btns.appendChild(b);});
+})();
+</script>
+</body>
+</html>
