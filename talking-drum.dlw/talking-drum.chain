@@ -4,6 +4,6 @@ slug  : talking-drum
 seal  : 183068d25bec9135dab7151bcde7c4e17bda6f917757ea7f6ee5d397d9de817a
 prev  : 4dfda4aff7c827f2588587ca017a65694e54142e18ebbff4f9dd80f217f2d02f
 link  : 863b7db909cee701e7cf470141faced78aaa05134e88fff4f01467d02b7bb180
-head  : 3447d3a0533aaf1e29a8bdc67a9774884fb3ae9dbc8a17064b7a008ca3c4ec90
+head  : 13f9ace173ef2e60af38912ba329b4afcb5a38b84a0e4495e8d30327f8c99cc2
 
 — the tether: link = sha256(index|slug|seal|prev). the chain head commits to the whole corpus.
